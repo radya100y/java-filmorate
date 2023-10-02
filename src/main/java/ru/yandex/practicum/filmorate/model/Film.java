@@ -7,7 +7,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -21,5 +20,7 @@ public class Film {
     @MinDateFilm
     private LocalDate releaseDate;
     @Min(1)
-    private Integer duration;
+    @NotNull
+    private final int duration;
+    private int rate;
 }
