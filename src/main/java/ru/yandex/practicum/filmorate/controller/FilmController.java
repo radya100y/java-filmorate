@@ -1,44 +1,40 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import lombok.Data;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
+@Data
 @RestController
 @RequestMapping("/films")
-public class FilmController {
-    List<Film> films = new ArrayList<>();
-    private int seqFilm = 0;
-    private static final Logger log = LoggerFactory.getLogger(Film.class);
-
-    @GetMapping
-    public List<Film> films() {
-        return films;
+public class FilmController extends BaseController<Film> {
+    @Override
+    public void validate(Film film) {
+        validateName(film);
+        validateDescription(film);
+        validateDate(film);
+        validateDuration(film);
     }
-    @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
-        film.setId(++seqFilm);
-        films.add(film);
-        log.info("Создан фильм " + film);
-        return film;
+    private void validateName(Film film) {
+        if (film.getName() == null) throw new ValidateException("Film name is blank");
+        else if (film.getName().isBlank()) throw new ValidateException("Film name is blank");
     }
-    @PutMapping
-    public Film change(@Valid @RequestBody Film film) {
-        for (Film existingFilm : films) {
-            if (existingFilm.getId() == film.getId()) {
-                films.remove(existingFilm);
-                films.add(film);
-                log.info("Фильм " + existingFilm + " обновлен");
-                return film;
-            }
-        }
-        log.warn("Обновление фильма " + film + " не удалось");
-        throw new ValidateException("Фильм не найден");
+    private void validateDescription(Film film) {
+        if (film.getDescription() == null) return;
+        if (film.getDescription().length() > 200)
+            throw new ValidateException("Film description is more than 200 chars");
+    }
+    private void validateDate(Film film) {
+        if (film.getReleaseDate() == null) return;
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))
+            throw new ValidateException("Film release date is lower then 1895 year");
+    }
+    private void validateDuration(Film film) {
+        if (film.getDuration() < 1)
+            throw new ValidateException("Film duration is lower then 1");
     }
 }

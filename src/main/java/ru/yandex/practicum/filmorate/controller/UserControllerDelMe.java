@@ -1,39 +1,38 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.error.ValidateException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.UserDelMe;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/users")
-public class UserController {
-    List<User> users = new ArrayList<>();
+//@RestController
+//@RequestMapping("/users")
+public class UserControllerDelMe {
+    List<UserDelMe> users = new ArrayList<>();
     private int seqUser = 0;
-    private static final Logger log = LoggerFactory.getLogger(User.class);
+    private static final Logger log = LoggerFactory.getLogger(UserDelMe.class);
 
-    @GetMapping
-    public List<User> users() {
+//    @GetMapping
+    public List<UserDelMe> users() {
         return users;
     }
 
-    @PostMapping
-    public User create(@Valid @RequestBody User user) {
+//    @PostMapping
+    public UserDelMe create(@Valid @RequestBody UserDelMe user) {
         user.setId(++seqUser);
         users.add(user);
         log.info("Создан пользователь " + user);
         return user;
     }
 
-    @PutMapping
-    public User change(@Valid @RequestBody User user) {
-        for(User existingUser : users) {
+//    @PutMapping
+    public UserDelMe change(@Valid @RequestBody UserDelMe user) {
+        for(UserDelMe existingUser : users) {
             if (existingUser.getId() == user.getId()) {
                 users.remove(existingUser);
                 users.add(user);
