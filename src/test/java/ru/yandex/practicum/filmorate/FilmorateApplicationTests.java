@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -10,24 +10,39 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@SpringBootTest
-class FilmorateApplicationTests {
-
-	@Test
+class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmController, Film> {
+	@BeforeEach
 	void contextLoads() {
+		controller = new FilmController();
+		entity = new Film();
 	}
-
 	@Test
-	void validateFilmFail() {
-		Film film = new Film();
-		film.setName("qwe");
-		film.setDuration(10);
-		film.setReleaseDate(LocalDate.of(2000, 01, 1));
-		FilmController films = new FilmController();
-		films.create(film);
-		System.out.println(films.get());
-//		assertThrows(ValidateException.class, () -> films.create(film));
+	void validAddNew() {
+		entity.setName("first");
+		entity.setReleaseDate(LocalDate.of(1895, 12, 29));
+		entity.setDuration(100);
+		controller.create(entity);
+		assertEquals(controller.get().size(), 1);
 	}
-
+	@Test
+	void failAddBlankName() {
+		entity.setName("");
+		entity.setReleaseDate(LocalDate.of(2000, 1, 1));
+		entity.setDuration(100);
+		assertThrows(ValidateException.class, () -> controller.create(entity));
+	}
+	@Test
+	void failAddZeroDuration() {
+		entity.setName("first");
+		entity.setReleaseDate(LocalDate.of(2000, 1, 1));
+		entity.setDuration(0);
+		assertThrows(ValidateException.class, () -> controller.create(entity));
+	}
+	@Test
+	void failAddIllegalDate() {
+		entity.setName("first");
+		entity.setReleaseDate(LocalDate.of(1895, 12, 27));
+		entity.setDuration(100);
+		assertThrows(ValidateException.class, () -> controller.create(entity));
+	}
 }
