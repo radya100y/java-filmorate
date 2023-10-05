@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Entity;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +13,20 @@ public abstract class BaseController<T extends Entity> {
     private final HashMap<Integer, T> kv = new HashMap<>();
     private int id = 0;
     protected abstract void validate(T fact);
-    @PostMapping
-    public T create(@RequestBody final T fact) {
+//    @PostMapping
+    /*public T create(@RequestBody final T fact) {
         validate(fact);
         int id = ++this.id;
         fact.setId(id);
         kv.put(id, fact);
         return fact;
+    }*/
+    @PostMapping
+    public ResponseEntity<T> create(@Valid @RequestBody T fact) {
+        int id = ++this.id;
+        fact.setId(id);
+        kv.put(id, fact);
+        return ResponseEntity.ok(fact);
     }
     @PutMapping
     public T update(@RequestBody final T fact) {

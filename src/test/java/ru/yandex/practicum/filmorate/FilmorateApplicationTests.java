@@ -45,4 +45,16 @@ class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmControl
 		entity.setDuration(100);
 		assertThrows(ValidateException.class, () -> controller.create(entity));
 	}
+	@Test
+	void validUpdateExisting() {
+		entity.setName("first");
+		entity.setReleaseDate(LocalDate.of(1895, 12, 29));
+		entity.setDuration(100);
+		controller.create(entity);
+		entity.setName("second");
+		entity.setReleaseDate(LocalDate.of(1895, 12, 30));
+		entity.setDuration(90);
+		controller.update(entity);
+		assertEquals(entity, controller.get().stream().findFirst().get());
+	}
 }
