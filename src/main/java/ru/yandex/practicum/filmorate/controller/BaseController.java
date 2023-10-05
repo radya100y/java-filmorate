@@ -19,6 +19,7 @@ public abstract class BaseController<T extends Entity> {
 
     @PostMapping
     public ResponseEntity<T> create(@Valid @RequestBody T fact) {
+        validate(fact);
         int id = ++this.id;
         fact.setId(id);
         kv.put(id, fact);
@@ -32,6 +33,7 @@ public abstract class BaseController<T extends Entity> {
             log.warn("Неудачная попытка обновления пользователя {}", fact);
             return ResponseEntity.internalServerError().body(fact);
         }
+        validate(fact);
         kv.put(fact.getId(), fact);
         log.info("Запись {} обновлена", fact);
         return ResponseEntity.ok(fact);
