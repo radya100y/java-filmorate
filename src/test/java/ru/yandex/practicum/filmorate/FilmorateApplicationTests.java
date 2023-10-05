@@ -1,60 +1,28 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.net.URI;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmController, Film> {
-	@BeforeEach
-	void contextLoads() {
-		controller = new FilmController();
-		entity = new Film();
-	}
-	@Test
-	void validAddNew() {
-		entity.setName("first");
-		entity.setReleaseDate(LocalDate.of(1895, 12, 29));
-		entity.setDuration(100);
-		controller.create(entity);
-		assertEquals(controller.get().size(), 1);
-	}
-	@Test
-	void failAddBlankName() {
-		entity.setName("");
-		entity.setReleaseDate(LocalDate.of(2000, 1, 1));
-		entity.setDuration(100);
-		assertThrows(ValidateException.class, () -> controller.create(entity));
-	}
-	@Test
-	void failAddZeroDuration() {
-		entity.setName("first");
-		entity.setReleaseDate(LocalDate.of(2000, 1, 1));
-		entity.setDuration(0);
-		assertThrows(ValidateException.class, () -> controller.create(entity));
-	}
-	@Test
-	void failAddIllegalDate() {
-		entity.setName("first");
-		entity.setReleaseDate(LocalDate.of(1895, 12, 27));
-		entity.setDuration(100);
-		assertThrows(ValidateException.class, () -> controller.create(entity));
-	}
-	@Test
-	void validUpdateExisting() {
-		entity.setName("first");
-		entity.setReleaseDate(LocalDate.of(1895, 12, 29));
-		entity.setDuration(100);
-		controller.create(entity);
-		entity.setName("second");
-		entity.setReleaseDate(LocalDate.of(1895, 12, 30));
-		entity.setDuration(90);
-		controller.update(entity);
-		assertEquals(entity, controller.get().stream().findFirst().get());
+
+	public FilmorateApplicationTests() {
+		uri = URI.create("http://localhost:8080/films");
+		validBody = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
+				"\"releaseDate\": \"1895-12-29\",\"duration\": 100}";
+		invalidBody1 = "{\"name\": \"\",\"description\": \"adipisicing\"," +
+				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
+		invalidBody2 = "{\"name\": \"nisi eiusmodq\",\"description\": \"-0123456789012345678901234567890123456789" +
+				"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567" +
+				"89012345678901234567890123456789012345678901234567890123456789\"," +
+				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
+		invalidBody3 = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
+				"\"releaseDate\": \"1895-12-27\",\"duration\": 100}";
+
+		validUpdateBody = "{\"id\": 1,\"name\": \"Film Updated\",\"releaseDate\": \"1989-04-17\"," +
+				"\"description\": \"New film update decription\",\"duration\": 190,\"rate\": 4}";
+		invalidUpdateBody = "{\"id\": 999,\"name_updated\": \"nisi updated\",\"description\": \"qwe\"," +
+				"\"releaseDate\": \"1895-12-29\",\"duration\": 1000}";
 	}
 }

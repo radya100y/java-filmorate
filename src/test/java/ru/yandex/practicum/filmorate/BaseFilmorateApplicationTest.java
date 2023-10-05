@@ -17,10 +17,12 @@ public abstract class BaseFilmorateApplicationTest<T extends BaseController, E e
     public E entity;
     HttpClient client = HttpClient.newHttpClient();
     public String validBody;
-    public String emptyBody;
+    public String emptyBody = "";
     public String invalidBody1;
     public String invalidBody2;
     public String invalidBody3;
+    public String validUpdateBody;
+    public String invalidUpdateBody;
 
     URI uri;
     String headerKey = "Content-Type";
@@ -60,6 +62,28 @@ public abstract class BaseFilmorateApplicationTest<T extends BaseController, E e
     void failAddIncorrectParam3() throws IOException, InterruptedException{
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(invalidBody3)).build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertNotEquals(200, response.statusCode());
+    }
+    @Test
+    void validUpdateExists() throws IOException, InterruptedException{
+        request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
+                .POST(HttpRequest.BodyPublishers.ofString(validBody)).build();
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
+                .PUT(HttpRequest.BodyPublishers.ofString(validUpdateBody)).build();
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+    }
+    @Test
+    void invalidUpdateNotExists() throws IOException, InterruptedException{
+        request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
+                .POST(HttpRequest.BodyPublishers.ofString(validBody)).build();
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
+                .PUT(HttpRequest.BodyPublishers.ofString(invalidUpdateBody)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertNotEquals(200, response.statusCode());
     }

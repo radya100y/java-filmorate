@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Entity;
 
 import javax.validation.Valid;
@@ -13,14 +12,6 @@ public abstract class BaseController<T extends Entity> {
     private final HashMap<Integer, T> kv = new HashMap<>();
     private int id = 0;
     protected abstract void validate(T fact);
-//    @PostMapping
-    /*public T create(@RequestBody final T fact) {
-        validate(fact);
-        int id = ++this.id;
-        fact.setId(id);
-        kv.put(id, fact);
-        return fact;
-    }*/
     @PostMapping
     public ResponseEntity<T> create(@Valid @RequestBody T fact) {
         int id = ++this.id;
@@ -29,11 +20,10 @@ public abstract class BaseController<T extends Entity> {
         return ResponseEntity.ok(fact);
     }
     @PutMapping
-    public T update(@RequestBody final T fact) {
-        if (!kv.containsKey(fact.getId())) throw new ValidateException("key not found");
-        validate(fact);
+    public ResponseEntity<T> update(@Valid @RequestBody T fact) {
+        if (!kv.containsKey(fact.getId())) return ResponseEntity.badRequest().build();
         kv.put(fact.getId(), fact);
-        return fact;
+        return ResponseEntity.ok(fact);
     }
     @GetMapping
     public List<T> get() {
