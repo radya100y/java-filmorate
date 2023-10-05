@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 @Validated
 @RestController
 @RequestMapping("/users")
-public class UserController extends BaseController<User>{
+public class UserController extends BaseController<User> {
     @Override
     public void validate(User user) {
     }
