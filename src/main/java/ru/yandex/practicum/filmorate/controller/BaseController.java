@@ -14,6 +14,7 @@ import java.util.List;
 public abstract class BaseController<T extends Entity> {
     private final HashMap<Integer, T> kv = new HashMap<>();
     private int id = 0;
+
     protected abstract void validate(T fact);
 
     @PostMapping
