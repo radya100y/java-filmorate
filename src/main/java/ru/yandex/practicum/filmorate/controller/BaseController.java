@@ -30,7 +30,7 @@ public abstract class BaseController<T extends Entity> {
     public ResponseEntity<T> update(@Valid @RequestBody T fact) {
         if (!kv.containsKey(fact.getId())) {
             log.warn("Неудачная попытка обновления пользователя {}", fact);
-            return ResponseEntity.badRequest().body(fact);
+            return ResponseEntity.internalServerError().body(fact);
         }
         kv.put(fact.getId(), fact);
         log.info("Запись {} обновлена", fact);
