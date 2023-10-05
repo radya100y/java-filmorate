@@ -9,11 +9,13 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 @Slf4j
 public abstract class BaseController<T extends Entity> {
     private final HashMap<Integer, T> kv = new HashMap<>();
     private int id = 0;
     protected abstract void validate(T fact);
+
     @PostMapping
     public ResponseEntity<T> create(@Valid @RequestBody T fact) {
         int id = ++this.id;
@@ -22,6 +24,7 @@ public abstract class BaseController<T extends Entity> {
         log.info("Добавлена новая запись {}", fact);
         return ResponseEntity.ok(fact);
     }
+
     @PutMapping
     public ResponseEntity<T> update(@Valid @RequestBody T fact) {
         if (!kv.containsKey(fact.getId())) {
@@ -32,6 +35,7 @@ public abstract class BaseController<T extends Entity> {
         log.info("Запись {} обновлена", fact);
         return ResponseEntity.ok(fact);
     }
+
     @GetMapping
     public List<T> get() {
         return new ArrayList<>(kv.values());
