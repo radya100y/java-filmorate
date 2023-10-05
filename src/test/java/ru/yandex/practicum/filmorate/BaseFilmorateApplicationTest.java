@@ -31,42 +31,47 @@ public abstract class BaseFilmorateApplicationTest<T extends BaseController, E e
     HttpResponse<String> response;
 
     @Test
-    void validAddNew() throws IOException, InterruptedException{
+    void validAddNew() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(validBody)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
     }
+
     @Test
-    void failAddEmpty() throws IOException, InterruptedException{
+    void failAddEmpty() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(emptyBody)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertNotEquals(200, response.statusCode());
     }
+
     @Test
-    void failAddIncorrectParam1() throws IOException, InterruptedException{
+    void failAddIncorrectParam1() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(invalidBody1)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertNotEquals(200, response.statusCode());
     }
+
     @Test
-    void failAddIncorrectParam2() throws IOException, InterruptedException{
+    void failAddIncorrectParam2() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(invalidBody2)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertNotEquals(200, response.statusCode());
     }
+
     @Test
-    void failAddIncorrectParam3() throws IOException, InterruptedException{
+    void failAddIncorrectParam3() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(invalidBody3)).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertNotEquals(200, response.statusCode());
     }
+
     @Test
-    void validUpdateExists() throws IOException, InterruptedException{
+    void validUpdateExists() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(validBody)).build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -76,8 +81,9 @@ public abstract class BaseFilmorateApplicationTest<T extends BaseController, E e
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
     }
+
     @Test
-    void invalidUpdateNotExists() throws IOException, InterruptedException{
+    void invalidUpdateNotExists() throws IOException, InterruptedException {
         request = HttpRequest.newBuilder().uri(uri).header(headerKey, headerValue)
                 .POST(HttpRequest.BodyPublishers.ofString(validBody)).build();
         client.send(request, HttpResponse.BodyHandlers.ofString());

@@ -9,14 +9,18 @@ class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmControl
 
 	public FilmorateApplicationTests() {
 		uri = URI.create("http://localhost:8080/films");
+
 		validBody = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
 				"\"releaseDate\": \"1895-12-29\",\"duration\": 100}";
+
 		invalidBody1 = "{\"name\": \"\",\"description\": \"adipisicing\"," +
 				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
+
 		invalidBody2 = "{\"name\": \"nisi eiusmodq\",\"description\": \"-0123456789012345678901234567890123456789" +
 				"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567" +
 				"89012345678901234567890123456789012345678901234567890123456789\"," +
 				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
+
 		invalidBody3 = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
 				"\"releaseDate\": \"1895-12-27\",\"duration\": 100}";
 
