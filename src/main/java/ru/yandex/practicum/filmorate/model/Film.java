@@ -19,7 +19,7 @@ public class Film extends Entity {
     @Size(max = 200)
     private String description;
 
-    @MinDateFilm
+    @MinDateFilm(value = "1895-12-28")
     private LocalDate releaseDate;
 
     @Min(1)
