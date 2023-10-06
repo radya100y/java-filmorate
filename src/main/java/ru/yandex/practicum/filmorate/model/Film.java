@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Data
 public class Film extends Entity {
 
-    @NotNull
     @NotBlank
     private String name;
 

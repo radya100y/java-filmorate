@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class User extends Entity {
 
     @Email
-    @NotNull
     @NotBlank
     private String email;
 
