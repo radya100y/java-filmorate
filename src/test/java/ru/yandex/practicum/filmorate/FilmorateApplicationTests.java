@@ -17,9 +17,7 @@ class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmControl
 		invalidBody1 = "{\"name\": \"\",\"description\": \"adipisicing\"," +
 				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
 
-		invalidBody2 = "{\"name\": \"nisi eiusmodq\",\"description\": \"-0123456789012345678901234567890123456789" +
-				"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567" +
-				"89012345678901234567890123456789012345678901234567890123456789\"," +
+		invalidBody2 = "{\"name\": \"nisi eiusmodq\",\"description\": " + "1".repeat(201) + "," +
 				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
 
 		invalidBody3 = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
