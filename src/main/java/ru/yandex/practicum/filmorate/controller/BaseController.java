@@ -1,46 +1,34 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Entity;
+import ru.yandex.practicum.filmorate.service.BaseService;
+import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public abstract class BaseController<T extends Entity> {
-    private final HashMap<Integer, T> kv = new HashMap<>();
-    private int id = 0;
+public abstract class BaseController<T extends Entity, Y extends BaseStorage<T>, U extends BaseService<T, Y>> {
+    private final U service;
 
-    protected abstract void validate(T fact);
+    protected BaseController(U service) {
+        this.service = service;
+    }
 
     @PostMapping
-    public ResponseEntity<T> create(@Valid @RequestBody T fact) {
-        validate(fact);
-        int id = ++this.id;
-        fact.setId(id);
-        kv.put(id, fact);
-        log.info("Добавлена новая запись {}", fact);
-        return ResponseEntity.ok(fact);
+    public T create(@Valid @RequestBody T fact) {
+        return service.create(fact);
     }
 
     @PutMapping
-    public ResponseEntity<T> update(@Valid @RequestBody T fact) {
-        if (!kv.containsKey(fact.getId())) {
-            log.warn("Неудачная попытка обновления пользователя {}", fact);
-            return ResponseEntity.internalServerError().body(fact);
-        }
-        validate(fact);
-        kv.put(fact.getId(), fact);
-        log.info("Запись {} обновлена", fact);
-        return ResponseEntity.ok(fact);
+    public T update(@Valid @RequestBody T fact) {
+        return service.update(fact);
     }
 
     @GetMapping
     public List<T> get() {
-        return new ArrayList<>(kv.values());
+        return service.getAll();
     }
 }

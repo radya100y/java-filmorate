@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Entity;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface BaseStorage<T extends Entity> {
@@ -14,4 +13,6 @@ public interface BaseStorage<T extends Entity> {
     T update(T fact);
 
     List<T> getAll();
+
+    T get(Integer id);
 }

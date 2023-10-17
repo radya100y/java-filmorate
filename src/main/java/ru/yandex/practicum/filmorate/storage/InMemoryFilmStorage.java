@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.error.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -11,8 +12,13 @@ import java.util.List;
 @Component
 public class InMemoryFilmStorage implements BaseStorage<Film> {
 
-    private final HashMap<Integer, Film> kv = new HashMap<>();
+    private final HashMap<Integer, Film> kv;
     private int id = 0;
+
+    @Autowired
+    public InMemoryFilmStorage(HashMap<Integer, Film> kv) {
+        this.kv = kv;
+    }
 
     @Override
     public void validate(Film film) {
@@ -38,5 +44,10 @@ public class InMemoryFilmStorage implements BaseStorage<Film> {
     @Override
     public List<Film> getAll() {
         return new ArrayList<>(kv.values());
+    }
+
+    @Override
+    public Film get(Integer id) {
+        return kv.get(id);
     }
 }

@@ -41,4 +41,12 @@ public class InMemoryUserStorage implements BaseStorage<User> {
     public List<User> getAll() {
         return new ArrayList<>(kv.values());
     }
+
+    @Override
+    public User get(Integer id) {
+        if (!kv.containsKey(id)) {
+            throw new NotFoundException(id);
+        }
+        return kv.get(id);
+    }
 }
