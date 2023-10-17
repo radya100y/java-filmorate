@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 public abstract class BaseController<T extends Entity, Y extends BaseStorage<T>, U extends BaseService<T, Y>> {
-    private final U service;
+    public final U service;
 
     protected BaseController(U service) {
         this.service = service;
@@ -28,7 +28,11 @@ public abstract class BaseController<T extends Entity, Y extends BaseStorage<T>,
     }
 
     @GetMapping
-    public List<T> get() {
+    public List<T> getAll() {
         return service.getAll();
+    }
+    @GetMapping("/{factId}")
+    public T get(@PathVariable("factId") Integer factId) {
+        return service.get(factId);
     }
 }
