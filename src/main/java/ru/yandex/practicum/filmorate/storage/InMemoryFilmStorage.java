@@ -48,6 +48,9 @@ public class InMemoryFilmStorage implements BaseStorage<Film> {
 
     @Override
     public Film get(Integer id) {
+        if (!kv.containsKey(id)) {
+            throw new NotFoundException(id);
+        }
         return kv.get(id);
     }
 }
