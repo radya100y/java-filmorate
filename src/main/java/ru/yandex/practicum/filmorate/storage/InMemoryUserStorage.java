@@ -31,7 +31,7 @@ public class InMemoryUserStorage implements BaseStorage<User> {
     @Override
     public User update(User user) {
         if (!kv.containsKey(user.getId())) {
-            throw new NotFoundException(user.getId());
+            throw new NotFoundException("Пользователь с идентификатором " + user.getId() + " не найден");
         }
         kv.put(user.getId(), user);
         return user;
@@ -45,7 +45,7 @@ public class InMemoryUserStorage implements BaseStorage<User> {
     @Override
     public User get(Integer id) {
         if (!kv.containsKey(id)) {
-            throw new NotFoundException(id);
+            throw new NotFoundException("Пользователь с идентификатором " + id + " не найден");
         }
         return kv.get(id);
     }

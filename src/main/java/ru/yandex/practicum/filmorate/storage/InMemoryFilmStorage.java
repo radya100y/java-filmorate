@@ -35,7 +35,7 @@ public class InMemoryFilmStorage implements BaseStorage<Film> {
     @Override
     public Film update(Film film) {
         if (!kv.containsKey(film.getId())) {
-            throw new NotFoundException(film.getId());
+            throw new NotFoundException("Фильм с идентификатором " + film.getId() + " не найден");
         }
         kv.put(film.getId(), film);
         return film;
@@ -49,7 +49,7 @@ public class InMemoryFilmStorage implements BaseStorage<Film> {
     @Override
     public Film get(Integer id) {
         if (!kv.containsKey(id)) {
-            throw new NotFoundException(id);
+            throw new NotFoundException("Фильм с идентификатором " + id + " не найден");
         }
         return kv.get(id);
     }

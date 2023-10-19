@@ -1,10 +1,13 @@
 package ru.yandex.practicum.filmorate.error;
 
 public class NotFoundException extends RuntimeException {
-    Integer entityId;
+    private final String parameter;
 
-    public NotFoundException(Integer entityId) {
-        super();
-        this.entityId = entityId;
+    public NotFoundException(String parameter) {
+        this.parameter = parameter;
+    }
+
+    public String getParameter() {
+        return parameter;
     }
 }
