@@ -23,7 +23,7 @@ public class FilmService extends BaseService<Film, InMemoryFilmStorage> {
         this.userStorage = userStorage;
     }
 
-    public Film addLike (Integer filmId, Integer userId) {
+    public Film addLike(Integer filmId, Integer userId) {
         Film film = get(filmId);
         User user = userStorage.get(userId);
         film.getLikeUsers().add(user.getId());
