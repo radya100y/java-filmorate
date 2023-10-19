@@ -2,15 +2,13 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
+import java.util.List;
 import java.util.stream.Collectors;
-
-import java.util.Set;
 
 @Service
 public class FilmService extends BaseService<Film, InMemoryFilmStorage> {
@@ -39,12 +37,11 @@ public class FilmService extends BaseService<Film, InMemoryFilmStorage> {
         return film;
     }
 
-    public Set<Integer> getPopular(Integer size) {
+    public List<Film> getPopular(Integer count) {
         return getAll().stream()
                 .sorted(this::compare)
-                .limit(size)
-                .map(Entity::getId)
-                .collect(Collectors.toSet());
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     private int compare(Film x, Film y) {

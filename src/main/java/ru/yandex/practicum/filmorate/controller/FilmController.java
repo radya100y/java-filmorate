@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -27,8 +27,8 @@ public class FilmController extends BaseController<Film, InMemoryFilmStorage, Fi
     }
 
     @GetMapping("/popular")
-    public Set<Integer> getPopular(@RequestParam(defaultValue = "10", required = false) Integer size) {
-        if (size <= 0) throw new ValidateException("Количество сообщений не может быть меньше 1");
-        return service.getPopular(size);
+    public List<Film> getPopular(@RequestParam(defaultValue = "10", required = false) Integer count) {
+        if (count <= 0) throw new ValidateException("Количество сообщений не может быть меньше 1");
+        return service.getPopular(count);
     }
 }

@@ -16,12 +16,12 @@ public class InMemoryUserStorage implements BaseStorage<User> {
 
     @Override
     public void validate(User user) {
-        if (user.getName() == null) user.setName(user.getLogin());
+        if (user.getName().isBlank()) user.setName(user.getLogin());
     }
 
     @Override
     public User create(User user) {
-        this.validate(user);
+        validate(user);
         int id = ++this.id;
         user.setId(id);
         kv.put(id, user);
@@ -33,6 +33,7 @@ public class InMemoryUserStorage implements BaseStorage<User> {
         if (!kv.containsKey(user.getId())) {
             throw new NotFoundException("Пользователь с идентификатором " + user.getId() + " не найден");
         }
+        validate(user);
         kv.put(user.getId(), user);
         return user;
     }

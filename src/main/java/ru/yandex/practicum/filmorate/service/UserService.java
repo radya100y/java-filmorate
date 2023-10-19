@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,11 +37,19 @@ public class UserService extends BaseService<User, InMemoryUserStorage> {
         return user;
     }
 
-    public Set<Integer> getCommonFriends(Integer userId, Integer otherUserId) {
+    public List<User> getFriends(Integer userId) {
+        Set<Integer> friends = this.get(userId).getFriends();
+        return friends.stream()
+                .map(this::get)
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getCommonFriends(Integer userId, Integer otherUserId) {
         Set<Integer> friends = this.get(userId).getFriends();
         Set<Integer> otherFriends = this.get(otherUserId).getFriends();
         return friends.stream()
                 .filter(otherFriends::contains)
-                .collect(Collectors.toSet());
+                .map(this::get)
+                .collect(Collectors.toList());
     }
 }
