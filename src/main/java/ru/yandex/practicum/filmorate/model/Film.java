@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film extends Entity {
@@ -27,4 +29,6 @@ public class Film extends Entity {
     private int duration;
 
     private int rate;
+
+    private Set<Integer> likeUsers = new HashSet<>();
 }
