@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService extends BaseService<Film, InMemoryFilmStorage> {
 
-    InMemoryUserStorage userStorage;
+    private final InMemoryUserStorage userStorage;
 
     @Autowired
     protected FilmService(InMemoryFilmStorage storage, InMemoryUserStorage userStorage) {
@@ -45,6 +45,6 @@ public class FilmService extends BaseService<Film, InMemoryFilmStorage> {
     }
 
     private int compare(Film x, Film y) {
-        return -1 * Integer.compare(x.getLikeUsers().size(), y.getLikeUsers().size());
+        return -Integer.compare(x.getLikeUsers().size(), y.getLikeUsers().size());
     }
 }

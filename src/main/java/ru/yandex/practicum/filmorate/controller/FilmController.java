@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.error.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -27,8 +27,7 @@ public class FilmController extends BaseController<Film, InMemoryFilmStorage, Fi
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopular(@RequestParam(defaultValue = "10", required = false) Integer count) {
-        if (count <= 0) throw new ValidateException("Количество сообщений не может быть меньше 1");
+    public List<Film> getPopular(@RequestParam(defaultValue = "10") @Min(1) Integer count) {
         return service.getPopular(count);
     }
 }
