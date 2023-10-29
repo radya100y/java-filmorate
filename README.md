@@ -1,3 +1,3 @@
 # java-filmorate
 Template repository for Filmorate project.
-![DataBase schema](/filmrate.png)
+![Схема связей таблиц проекта](/filmrate.png)
