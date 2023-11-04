@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,11 +22,18 @@ public class User extends Entity {
     @NotBlank
     private String login;
 
-//    @Value("${login}")
     private String name;
 
     @PastOrPresent
     private LocalDate birthday;
 
     private Set<Integer> friends = new HashSet<>();
+
+    public User(int id, String email, String login, String name, Date birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday.toLocalDate();
+    }
 }
