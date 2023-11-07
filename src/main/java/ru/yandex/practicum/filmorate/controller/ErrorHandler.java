@@ -39,7 +39,7 @@ public class ErrorHandler {
     public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException exc) {
         log.warn("Получен код 400 {}", exc.getMessage());
         return new ErrorResponse(
-                String.format("Неправильно задан аргумент запроса")
+                "Неправильно задан аргумент запроса"
         );
     }
 
@@ -52,12 +52,12 @@ public class ErrorHandler {
         );
     }
 
-/*    @ExceptionHandler
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(final Exception exc) {
         log.warn("Получен код 500 {}", exc.getMessage());
         return new ErrorResponse(
                 "Произошла непредвиденная ошибка."
         );
-    }*/
+    }
 }

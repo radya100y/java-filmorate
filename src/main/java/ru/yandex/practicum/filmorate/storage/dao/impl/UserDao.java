@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.dao.impl;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.error.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
@@ -25,6 +27,7 @@ public class UserDao implements BaseStorage<User> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public void validate(User user) {
         if (user.getName().isBlank()) user.setName(user.getLogin());
     }
@@ -47,8 +50,7 @@ public class UserDao implements BaseStorage<User> {
     }
 
     @Override
-    public User update(User fact) {
-        validate(fact);
+    public User update(User fact) { //EmptyResultDataAccessException
         sqlQuery = "update _user set email = ?, login = ?, name = ?, birthday = ? where id = ?";
         jdbcTemplate.update(sqlQuery
                 , fact.getEmail()
@@ -66,36 +68,47 @@ public class UserDao implements BaseStorage<User> {
     }
 
     @Override
-    public User get(Integer id) {
+    public User get(Integer userId) {
         sqlQuery = "select id, email, login, name, birthday from _user where id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
+        try {
+            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, userId);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException("Пользователь " + userId + " не найден");
+        }
     }
 
     public List<User> getFriends(Integer userId) {
+        get(userId);
         sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
                 "from user_friend where user_id = ?)";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer relatedUserId) {
+        get(userId);
+        get(relatedUserId);
         sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
                 "from user_friend where user_id in (?, ?) group by related_user_id having count(user_id) = 2)";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, relatedUserId);
     }
 
     public List<User> addFriend(Integer userId, Integer relatedUserId) {
-        sqlQuery = "insert into user_friend (user_id, related_user_id) values (?, ?)";
+        get(userId);
+        get(relatedUserId);
+        sqlQuery = "insert into user_friend (user_id, related_user_id) values (?, ?) ";
         jdbcTemplate.update(sqlQuery, userId, relatedUserId);
         return getFriends(userId);
     }
 
     public List<User> delFriend(Integer userId, Integer relatedUserId) {
+        get(userId);
+        get(relatedUserId);
         sqlQuery = "delete user_friend where user_id = ? and related_user_id = ?";
         jdbcTemplate.update(sqlQuery, userId, relatedUserId);
         return getFriends(userId);
     }
 
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
+    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException, EmptyResultDataAccessException {
         return new User(
                 resultSet.getInt("id"),
                 resultSet.getString("email"),
