@@ -77,8 +77,20 @@ public class UserDao implements BaseStorage<User> {
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
     }
 
+    public List<User> getCommonFriends(Integer userId, Integer relatedUserId) {
+        sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
+                "from user_friend where user_id in (?, ?) group by related_user_id having count(user_id) = 2)";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, relatedUserId);
+    }
+
     public List<User> addFriend(Integer userId, Integer relatedUserId) {
         sqlQuery = "insert into user_friend (user_id, related_user_id) values (?, ?)";
+        jdbcTemplate.update(sqlQuery, userId, relatedUserId);
+        return getFriends(userId);
+    }
+
+    public List<User> delFriend(Integer userId, Integer relatedUserId) {
+        sqlQuery = "delete user_friend where user_id = ? and related_user_id = ?";
         jdbcTemplate.update(sqlQuery, userId, relatedUserId);
         return getFriends(userId);
     }

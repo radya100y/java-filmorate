@@ -22,19 +22,19 @@ public class UserController extends BaseController<User, UserDao, UserService> {
         return service.addFriend(userId, otherUserId);
     }
 
-/*    @DeleteMapping("/{userId}/friends/{otherUserId}")
-    public User delFriend(@PathVariable("userId") Integer userId, @PathVariable("otherUserId") Integer otherUserId) {
+    @DeleteMapping("/{userId}/friends/{otherUserId}")
+    public List<User> delFriend(@PathVariable("userId") Integer userId, @PathVariable("otherUserId") Integer otherUserId) {
         return service.delFriend(userId, otherUserId);
-    }*/
+    }
 
     @GetMapping("/{userId}/friends")
     public List<User> getFriends(@PathVariable("userId") Integer userId) {
         return service.getFriends(userId);
     }
 
-/*    @GetMapping("/{userId}/friends/common/{otherUserId}")
+    @GetMapping("/{userId}/friends/common/{otherUserId}")
     public List<User> getCommonFriends(@PathVariable("userId") Integer userId,
                                        @PathVariable("otherUserId") Integer otherUserId) {
         return service.getCommonFriends(userId, otherUserId);
-    }*/
+    }
 }

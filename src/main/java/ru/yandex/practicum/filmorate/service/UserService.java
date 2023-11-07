@@ -19,26 +19,15 @@ public class UserService extends BaseService<User, UserDao> {
         return storage.addFriend(userId, otherUserId);
     }
 
-/*    public User delFriend(Integer userId, Integer otherUserId) {
-        User user = this.get(userId);
-        User otherUser = this.get(otherUserId);
-        user.getFriends().remove(this.get(otherUserId).getId());
-        otherUser.getFriends().remove(this.get(userId).getId());
-        this.update(user);
-        this.update(otherUser);
-        return user;
-    }*/
+    public List<User> delFriend(Integer userId, Integer otherUserId) {
+        return storage.delFriend(userId, otherUserId);
+    }
 
     public List<User> getFriends(Integer userId) {
         return storage.getFriends(userId);
     }
-/*
+
     public List<User> getCommonFriends(Integer userId, Integer otherUserId) {
-        Set<Integer> friends = this.get(userId).getFriends();
-        Set<Integer> otherFriends = this.get(otherUserId).getFriends();
-        return friends.stream()
-                .filter(otherFriends::contains)
-                .map(this::get)
-                .collect(Collectors.toList());
-    }*/
+        return storage.getCommonFriends(userId, otherUserId);
+    }
 }
