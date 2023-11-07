@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.service.BaseService;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
-import ru.yandex.practicum.filmorate.storage.dao.BaseStorageDao;
 
 import javax.validation.Valid;
 import java.util.List;

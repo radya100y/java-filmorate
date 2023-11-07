@@ -52,12 +52,12 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler
+/*    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(final Exception exc) {
         log.warn("Получен код 500 {}", exc.getMessage());
         return new ErrorResponse(
                 "Произошла непредвиденная ошибка."
         );
-    }
+    }*/
 }

@@ -1,21 +1,22 @@
 package ru.yandex.practicum.filmorate.storage.dao.impl;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.dao.BaseStorageDao;
+import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
-public class UserDao implements BaseStorageDao<User> {
+@Primary
+public class UserDao implements BaseStorage<User> {
 
     private final JdbcTemplate jdbcTemplate;
     private String sqlQuery;
@@ -29,7 +30,7 @@ public class UserDao implements BaseStorageDao<User> {
     }
 
     @Override
-    public User create(User fact) throws SQLException {
+    public User create(User fact) {
         validate(fact);
         sqlQuery = "insert into _user (email, login, name, birthday) values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -42,11 +43,12 @@ public class UserDao implements BaseStorageDao<User> {
                     return stmt;
                 }, keyHolder
         );
-        return get(Objects.requireNonNull(keyHolder.getKey()).intValue()).get();
+        return get(Objects.requireNonNull(keyHolder.getKey()).intValue());
     }
 
     @Override
     public User update(User fact) {
+        validate(fact);
         sqlQuery = "update _user set email = ?, login = ?, name = ?, birthday = ? where id = ?";
         jdbcTemplate.update(sqlQuery
                 , fact.getEmail()
@@ -54,7 +56,7 @@ public class UserDao implements BaseStorageDao<User> {
                 , fact.getName()
                 , fact.getBirthday()
                 , fact.getId());
-        return get(fact.getId()).get();
+        return get(fact.getId());
     }
 
     @Override
@@ -64,9 +66,21 @@ public class UserDao implements BaseStorageDao<User> {
     }
 
     @Override
-    public Optional<User> get(Integer id) {
+    public User get(Integer id) {
         sqlQuery = "select id, email, login, name, birthday from _user where id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id));
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
+    }
+
+    public List<User> getFriends(Integer userId) {
+        sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
+                "from user_friend where user_id = ?)";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
+    }
+
+    public List<User> addFriend(Integer userId, Integer relatedUserId) {
+        sqlQuery = "insert into user_friend (user_id, related_user_id) values (?, ?)";
+        jdbcTemplate.update(sqlQuery, userId, relatedUserId);
+        return getFriends(userId);
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
