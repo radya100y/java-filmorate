@@ -38,9 +38,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException exc) {
         log.warn("Получен код 400 {}", exc.getMessage());
-        return new ErrorResponse(
-                "Неправильно задан аргумент запроса"
-        );
+        return new ErrorResponse("Неправильно задан аргумент запроса");
     }
 
     @ExceptionHandler

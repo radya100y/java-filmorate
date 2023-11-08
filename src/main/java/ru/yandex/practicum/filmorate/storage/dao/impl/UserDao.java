@@ -50,14 +50,14 @@ public class UserDao implements BaseStorage<User> {
     }
 
     @Override
-    public User update(User fact) { //EmptyResultDataAccessException
+    public User update(User fact) {
         sqlQuery = "update _user set email = ?, login = ?, name = ?, birthday = ? where id = ?";
-        jdbcTemplate.update(sqlQuery
-                , fact.getEmail()
-                , fact.getLogin()
-                , fact.getName()
-                , fact.getBirthday()
-                , fact.getId());
+        jdbcTemplate.update(sqlQuery,
+                fact.getEmail(),
+                fact.getLogin(),
+                fact.getName(),
+                fact.getBirthday(),
+                fact.getId());
         return get(fact.getId());
     }
 
@@ -108,7 +108,7 @@ public class UserDao implements BaseStorage<User> {
         return getFriends(userId);
     }
 
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException, EmptyResultDataAccessException {
+    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return new User(
                 resultSet.getInt("id"),
                 resultSet.getString("email"),

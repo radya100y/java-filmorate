@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.dao.impl.FilmDao;
 
 import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequestMapping("/films")
-public class FilmController extends BaseController<Film, InMemoryFilmStorage, FilmService> {
+public class FilmController extends BaseController<Film, FilmDao, FilmService> {
 
     protected FilmController(FilmService service) {
         super(service);

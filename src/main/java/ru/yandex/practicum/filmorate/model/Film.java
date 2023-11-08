@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,16 @@ public class Film extends Entity {
     private int duration;
 
     private int rate;
-
+    private int ratingId;
     private Set<Integer> likeUsers = new HashSet<>();
+
+    public Film(int id, String name, String description, Date releaseDate, int duration, int rate, int ratingId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate.toLocalDate();
+        this.duration = duration;
+        this.rate = rate;
+        this.ratingId = ratingId;
+    }
 }
