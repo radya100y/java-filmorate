@@ -2,25 +2,28 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.dao.impl.FilmDao;
+import ru.yandex.practicum.filmorate.storage.dao.impl.GenreDao;
+import ru.yandex.practicum.filmorate.storage.dao.impl.MpaDao;
 import ru.yandex.practicum.filmorate.storage.dao.impl.UserDao;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService extends BaseService<Film, FilmDao> {
 
     private final UserDao userStorage;
+    private final GenreDao genreStorage;
+    private final MpaDao mpaStorage;
 
     @Autowired
-    protected FilmService(FilmDao storage, UserDao userStorage) {
+    protected FilmService(FilmDao storage, UserDao userStorage, GenreDao genreStorage, MpaDao mpaStorage) {
         super(storage);
         this.userStorage = userStorage;
+        this.genreStorage = genreStorage;
+        this.mpaStorage = mpaStorage;
     }
 
     public Film addLike(Integer filmId, Integer userId) {
@@ -39,7 +42,20 @@ public class FilmService extends BaseService<Film, FilmDao> {
         return storage.getPopular(count);
     }
 
-    private int compare(Film x, Film y) {
-        return -Integer.compare(x.getLikeUsers().size(), y.getLikeUsers().size());
+    @Override
+    public Film create(Film fact) {
+        Film film = super.create(fact);
+        film.setMpa(mpaStorage.get(fact.getMpa().getId()));
+        film.setGenres(genreStorage.addFilmGenre(film.getId(), fact.getGenres()));
+        return film;
+    }
+
+    @Override
+    public Film update(Film fact) {
+        Film film = super.update(fact);
+        film.setMpa(mpaStorage.get(fact.getMpa().getId()));
+        genreStorage.delFilmGenre(film.getId());
+        film.setGenres(genreStorage.addFilmGenre(film.getId(), fact.getGenres()));
+        return film;
     }
 }

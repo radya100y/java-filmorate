@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class Film extends Entity {
@@ -30,16 +29,19 @@ public class Film extends Entity {
     private int duration;
 
     private int rate;
-    private int ratingId;
-    private Set<Integer> likeUsers = new HashSet<>();
 
-    public Film(int id, String name, String description, Date releaseDate, int duration, int rate, int ratingId) {
-        this.id = id;
+//    private Set<Integer> likeUsers = new HashSet<>();
+    private Entity mpa;
+    private List<Entity> genres;
+
+    public Film(int id, String name, String description, Date releaseDate, int duration, int rate, Entity mpa, List<Entity> genres) {
+        super(id);
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate.toLocalDate();
         this.duration = duration;
         this.rate = rate;
-        this.ratingId = ratingId;
+        this.mpa = mpa;
+        this.genres = genres;
     }
 }

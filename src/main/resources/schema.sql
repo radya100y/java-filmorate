@@ -5,7 +5,7 @@ create table if not exists _user(
     , name varchar(512)
     , birthday DATE
 );
-create table if not exists rating
+create table if not exists mpa
 (
     id int generated always as identity primary key
     , name varchar(256)
@@ -17,8 +17,9 @@ create table if not exists film
     , description varchar(200)
     , release_date DATE
     , duration int
-    , rating_id int
-    , foreign key (rating_id) references rating(id)
+    , rate int
+    , mpa int
+    , foreign key (mpa) references mpa(id)
 );
 create table if not exists user_friend
 (

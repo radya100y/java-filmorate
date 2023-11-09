@@ -28,7 +28,7 @@ public class User extends Entity {
 //    private Set<Integer> friends = new HashSet<>();
 
     public User(int id, String email, String login, String name, Date birthday) {
-        this.id = id;
+        super(id);
         this.email = email;
         this.login = login;
         this.name = name;

@@ -7,12 +7,15 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.error.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +37,7 @@ public class FilmDao implements BaseStorage<Film> {
 
     @Override
     public Film create(Film fact) {
-        sqlQuery = "insert into film (name, description, release_date, duration, rate, rating_id) " +
+        sqlQuery = "insert into film (name, description, release_date, duration, rate, mpa) " +
                 "values (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(x -> {
@@ -43,8 +46,8 @@ public class FilmDao implements BaseStorage<Film> {
                     stmt.setString(2, fact.getDescription());
                     stmt.setObject(3, fact.getReleaseDate());
                     stmt.setInt(4, fact.getDuration());
-                    stmt.setInt(4, fact.getRate());
-                    stmt.setInt(4, fact.getRatingId());
+                    stmt.setInt(5, fact.getRate());
+                    stmt.setInt(6, fact.getMpa().getId());
                     return stmt;
                 }, keyHolder
         );
@@ -54,14 +57,14 @@ public class FilmDao implements BaseStorage<Film> {
     @Override
     public Film update(Film fact) {
         sqlQuery = "update film set name = ?, description = ?, release_date = ?, " +
-                "duration = ?, rate = ?, rating_id = ? where id = ?";
+                "duration = ?, rate = ?, mpa = ? where id = ?";
         jdbcTemplate.update(sqlQuery,
                 fact.getName(),
                 fact.getDescription(),
                 fact.getReleaseDate(),
                 fact.getDuration(),
                 fact.getRate(),
-                fact.getRatingId(),
+                fact.getMpa().getId(),
                 fact.getId()
         );
         return get(fact.getId());
@@ -69,12 +72,12 @@ public class FilmDao implements BaseStorage<Film> {
 
     @Override
     public List<Film> getAll() {
-        sqlQuery = "select id, name, description, release_date, duration, rate, rating_id from film";
+        sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
     public List<Film> getPopular(Integer count) {
-        sqlQuery = "select id, name, description, release_date, duration, rate, rating_id from film as f " +
+        sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film as f " +
                 "left join (select film_id, count(user_id) as qty from user_like_film group by film_id) as r " +
                 "on r.film_id = f.id order by r.qty desc limit ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
@@ -82,13 +85,14 @@ public class FilmDao implements BaseStorage<Film> {
 
     @Override
     public Film get(Integer filmId) {
-        sqlQuery = "select id, name, description, release_date, duration, rate, rating_id from film where id = ?";
+        sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film where id = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Фильм " + filmId + " не найден");
         }
     }
+
 
     public Film addLike(Integer filmId, Integer userId) {
         sqlQuery = "insert into user_like_film (user_id, film_id) values (?, ?)";
@@ -110,7 +114,8 @@ public class FilmDao implements BaseStorage<Film> {
                 resultSet.getDate("release_date"),
                 resultSet.getInt("duration"),
                 resultSet.getInt("rate"),
-                resultSet.getInt("rating_id")
+                null,
+                null
         );
     }
 }
