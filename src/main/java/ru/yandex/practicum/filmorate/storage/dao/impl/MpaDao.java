@@ -44,6 +44,7 @@ public class MpaDao implements BaseStorage<Mpa> {
 
     @Override
     public Mpa get(Integer id) {
+//        if (id == null) return null;
         sqlQuery = "select id, name from mpa where id = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, id);

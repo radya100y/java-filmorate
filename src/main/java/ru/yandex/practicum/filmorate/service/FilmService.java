@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dao.impl.FilmDao;
 import ru.yandex.practicum.filmorate.storage.dao.impl.GenreDao;
@@ -39,14 +38,19 @@ public class FilmService extends BaseService<Film, FilmDao> {
     }
 
     public List<Film> getPopular(Integer count) {
-        return storage.getPopular(count);
+        List<Film> lf = storage.getPopular(count);
+        for(Film film : lf) {
+            film.setMpa(mpaStorage.get(film.getId()));
+            film.setGenres(genreStorage.getFilmGenres(film.getId()));
+        }
+        return lf;
     }
 
     @Override
     public Film create(Film fact) {
         Film film = super.create(fact);
         film.setMpa(mpaStorage.get(fact.getMpa().getId()));
-        film.setGenres(genreStorage.addFilmGenre(film.getId(), fact.getGenres()));
+        film.setGenres(genreStorage.addFilmGenres(film.getId(), fact.getGenres()));
         return film;
     }
 
@@ -54,8 +58,27 @@ public class FilmService extends BaseService<Film, FilmDao> {
     public Film update(Film fact) {
         Film film = super.update(fact);
         film.setMpa(mpaStorage.get(fact.getMpa().getId()));
-        genreStorage.delFilmGenre(film.getId());
-        film.setGenres(genreStorage.addFilmGenre(film.getId(), fact.getGenres()));
+        genreStorage.delFilmGenres(film.getId());
+        film.setGenres(genreStorage.addFilmGenres(film.getId(), fact.getGenres()));
         return film;
     }
+
+    @Override
+    public List<Film> getAll() {
+        List<Film> lf = super.getAll();
+        for(Film film : lf) {
+            film.setMpa(mpaStorage.get(film.getId()));
+            film.setGenres(genreStorage.getFilmGenres(film.getId()));
+        }
+        return lf;
+    }
+
+    @Override
+    public Film get(Integer id) {
+        Film film = super.get(id);
+        film.setMpa(mpaStorage.get(id));
+        film.setGenres(genreStorage.getFilmGenres(id));
+        return film;
+    }
+
 }
