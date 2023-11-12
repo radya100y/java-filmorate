@@ -10,4 +10,5 @@ public class Mpa extends Entity {
         super(id);
         this.name = name;
     }
+
 }

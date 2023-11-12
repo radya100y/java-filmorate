@@ -73,7 +73,8 @@ public class FilmDao implements BaseStorage<Film> {
     @Override
     public List<Film> getAll() {
         sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        List<Film> filmList = jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        return filmList;
     }
 
     public List<Film> getPopular(Integer count) {
@@ -114,7 +115,7 @@ public class FilmDao implements BaseStorage<Film> {
                 resultSet.getDate("release_date"),
                 resultSet.getInt("duration"),
                 resultSet.getInt("rate"),
-                null,
+                new Entity(resultSet.getInt("mpa")),
                 null
         );
     }

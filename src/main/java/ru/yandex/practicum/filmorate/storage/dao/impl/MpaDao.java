@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.error.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
@@ -44,7 +45,6 @@ public class MpaDao implements BaseStorage<Mpa> {
 
     @Override
     public Mpa get(Integer id) {
-//        if (id == null) return null;
         sqlQuery = "select id, name from mpa where id = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, id);
@@ -58,5 +58,9 @@ public class MpaDao implements BaseStorage<Mpa> {
                 resultSet.getInt("id"),
                 resultSet.getString("name")
         );
+    }
+
+    private Entity mapRowToEntity(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Entity(resultSet.getInt("id"));
     }
 }
