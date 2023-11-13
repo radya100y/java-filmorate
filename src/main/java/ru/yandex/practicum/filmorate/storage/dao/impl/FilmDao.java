@@ -96,7 +96,7 @@ public class FilmDao implements BaseStorage<Film> {
 
 
     public Film addLike(Integer filmId, Integer userId) {
-        sqlQuery = "insert into user_like_film (user_id, film_id) values (?, ?)";
+        sqlQuery = "merge into user_like_film key(user_id, film_id) values (?, ?)";
         jdbcTemplate.update(sqlQuery, userId, filmId);
         return get(filmId);
     }

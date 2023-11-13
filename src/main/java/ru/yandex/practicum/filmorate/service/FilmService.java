@@ -16,8 +16,8 @@ public class FilmService extends BaseService<Film, FilmDao> {
     private final GenreDao genreStorage;
 
     @Autowired
-    protected FilmService(FilmDao storage, UserDao userStorage, GenreDao genreStorage) {
-        super(storage);
+    protected FilmService(FilmDao filmStorage, UserDao userStorage, GenreDao genreStorage) {
+        super(filmStorage);
         this.userStorage = userStorage;
         this.genreStorage = genreStorage;
     }
