@@ -7,7 +7,7 @@ create table if not exists _user(
 );
 create table if not exists mpa
 (
-    id int generated always as identity primary key
+    id int primary key
     , name varchar(256)
 );
 create table if not exists film
@@ -39,7 +39,7 @@ create table if not exists user_like_film
 );
 create table if not exists genre
 (
-    id int generated always as identity primary key
+    id int primary key
     , name varchar(256)
 );
 create table if not exists film_genre
