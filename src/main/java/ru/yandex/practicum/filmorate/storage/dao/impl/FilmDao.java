@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.error.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import java.sql.PreparedStatement;
@@ -25,9 +26,13 @@ public class FilmDao implements BaseStorage<Film> {
 
     private final JdbcTemplate jdbcTemplate;
     private String sqlQuery;
+    private final MpaDao mpaDao;
+    private final GenreDao genreDao;
 
-    public FilmDao(JdbcTemplate jdbcTemplate) {
+    public FilmDao(JdbcTemplate jdbcTemplate, MpaDao mpaDao, GenreDao genreDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.mpaDao = mpaDao;
+        this.genreDao = genreDao;
     }
 
     @Override
@@ -115,8 +120,8 @@ public class FilmDao implements BaseStorage<Film> {
                 resultSet.getDate("release_date"),
                 resultSet.getInt("duration"),
                 resultSet.getInt("rate"),
-                new Entity(resultSet.getInt("mpa")),
-                null
+                mpaDao.get(resultSet.getInt("mpa")),
+                genreDao.getFilmGenres(resultSet.getInt("id"))
         );
     }
 }

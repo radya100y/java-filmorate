@@ -31,10 +31,10 @@ public class Film extends Entity {
     private int rate;
 
 //    private Set<Integer> likeUsers = new HashSet<>();
-    private Entity mpa;
-    private List<Entity> genres;
+    private Mpa mpa;
+    private List<Genre> genres;
 
-    public Film(int id, String name, String description, Date releaseDate, int duration, int rate, Entity mpa, List<Entity> genres) {
+    public Film(int id, String name, String description, Date releaseDate, int duration, int rate, Mpa mpa, List<Genre> genres) {
         super(id);
         this.name = name;
         this.description = description;

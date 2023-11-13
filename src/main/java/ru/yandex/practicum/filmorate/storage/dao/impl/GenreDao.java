@@ -54,18 +54,18 @@ public class GenreDao implements BaseStorage<Genre> {
         }
     }
 
-    public List<Entity> addFilmGenres(Integer filmId, List<Entity> genres) {
+    public List<Genre> addFilmGenres(Integer filmId, List<Genre> genres) {
         if (genres == null) return null;
         sqlQuery = "merge into film_genre key(film_id, genre_id) values (?, ?)";
-        for(Entity genre : genres) {
+        for(Genre genre : genres) {
             jdbcTemplate.update(sqlQuery, filmId, genre.getId());
         }
         return getFilmGenres(filmId);
     }
 
-    public List<Entity> getFilmGenres(Integer filmId) {
-        sqlQuery = "select genre_id as id from film_genre where film_id = ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToEntity, filmId);
+    public List<Genre> getFilmGenres(Integer filmId) {
+        sqlQuery = "select id, name from genre where id in (select genre_id from film_genre where film_id = ?)";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
     }
 
     public void delFilmGenres(Integer filmId) {
