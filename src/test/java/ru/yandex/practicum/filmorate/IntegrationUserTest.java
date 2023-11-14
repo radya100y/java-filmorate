@@ -21,9 +21,11 @@ public class IntegrationUserTest {
 
     private final JdbcTemplate jdbcTemplate;
     private User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov",
-            Date.valueOf("2000-01-01"));;
+            Date.valueOf("2000-01-01"));
+
     private User updatedUser = new User(1, "user_updated@email.ru", "vanya123_updated",
             "Ivan Petrov upd", Date.valueOf("2000-01-01"));
+
     private UserDao userDao;
 
     @BeforeEach
