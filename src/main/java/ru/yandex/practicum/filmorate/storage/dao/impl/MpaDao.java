@@ -23,6 +23,7 @@ public class MpaDao implements BaseStorage<Mpa> {
     public MpaDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public void validate(Mpa fact) {
     }
