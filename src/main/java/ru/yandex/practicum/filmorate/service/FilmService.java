@@ -36,7 +36,7 @@ public class FilmService extends BaseService<Film, FilmDao> {
 
     public List<Film> getPopular(Integer count) {
         List<Film> lf = storage.getPopular(count);
-        for(Film film : lf) {
+        for (Film film : lf) {
             film.setGenres(genreStorage.getFilmGenres(film.getId()));
         }
         return lf;
@@ -60,7 +60,7 @@ public class FilmService extends BaseService<Film, FilmDao> {
     @Override
     public List<Film> getAll() {
         List<Film> lf = super.getAll();
-        for(Film film : lf) {
+        for (Film film : lf) {
             film.setGenres(genreStorage.getFilmGenres(film.getId()));
         }
         return lf;
