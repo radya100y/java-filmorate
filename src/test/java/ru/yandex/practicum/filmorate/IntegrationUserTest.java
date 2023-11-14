@@ -20,40 +20,33 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class IntegrationUserTest {
 
     private final JdbcTemplate jdbcTemplate;
+    private User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov",
+            Date.valueOf("2000-01-01"));;
+    private User updatedUser = new User(1, "user_updated@email.ru", "vanya123_updated",
+            "Ivan Petrov upd", Date.valueOf("2000-01-01"));
+    private UserDao userDao;
 
     @BeforeEach
     public void initTest() {
-
+        userDao = new UserDao(jdbcTemplate);
+        userDao.create(newUser);
     }
 
     @Test
-    public void validCreateUser() {
+    public void validCreate() {
 
-        User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", Date.valueOf("2000-01-01"));
-        UserDao userDao = new UserDao(jdbcTemplate);
-        userDao.create(newUser);
-
-        User savedUser = userDao.get(1);
-
-        assertThat(savedUser)
+        assertThat(userDao.get(1))
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(newUser);
     }
 
     @Test
-    public void validUpdateUser() {
+    public void validUpdate() {
 
-        User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", Date.valueOf("2000-01-01"));
-        UserDao userDao = new UserDao(jdbcTemplate);
-        userDao.create(newUser);
-
-        User updatedUser = new User(1, "user_updated@email.ru", "vanya123_updated", "Ivan Petrov upd", Date.valueOf("2000-01-01"));
         userDao.update(updatedUser);
 
-        User savedUser = userDao.get(1);
-
-        assertThat(savedUser)
+        assertThat(userDao.get(1))
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(updatedUser);
