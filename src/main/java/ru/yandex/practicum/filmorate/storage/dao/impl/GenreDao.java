@@ -23,9 +23,9 @@ public class GenreDao implements BaseStorage<Genre> {
     public GenreDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public void validate(Genre fact) {
-
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GenreDao implements BaseStorage<Genre> {
     public List<Genre> addFilmGenres(Integer filmId, List<Genre> genres) {
         if (genres == null) return null;
         sqlQuery = "merge into film_genre key(film_id, genre_id) values (?, ?)";
-        for(Genre genre : genres) {
+        for (Genre genre : genres) {
             jdbcTemplate.update(sqlQuery, filmId, genre.getId());
         }
         return getFilmGenres(filmId);
