@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -46,6 +47,7 @@ public class IntegrationFilmTest {
     }
 
     @Test
+    @DisplayName("Создание нового фильма")
     public void validCreate() {
 
         filmDao.get(1).setGenres(genreDao.addFilmGenres(1, newFilm.getGenres()));
@@ -56,6 +58,7 @@ public class IntegrationFilmTest {
     }
 
     @Test
+    @DisplayName("Обновление фильма")
     public void validUpdate() {
 
         filmDao.update(updFilm);

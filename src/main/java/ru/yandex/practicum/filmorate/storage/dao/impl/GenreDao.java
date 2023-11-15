@@ -48,7 +48,7 @@ public class GenreDao implements BaseStorage<Genre> {
     public Genre get(Integer id) {
         sqlQuery = "select id, name from genre where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, new GenreMapRow());
+            return jdbcTemplate.queryForObject(sqlQuery, new GenreMapRow(), id);
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Рейтинг " + id + " не найден");
         }

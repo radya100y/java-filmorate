@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -35,6 +36,7 @@ public class IntegrationUserTest {
     }
 
     @Test
+    @DisplayName("Создание нового пользователя")
     public void validCreate() {
 
         assertThat(userDao.get(1))
@@ -44,6 +46,7 @@ public class IntegrationUserTest {
     }
 
     @Test
+    @DisplayName("Обновление пользователя")
     public void validUpdate() {
 
         userDao.update(updatedUser);
