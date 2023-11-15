@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao.impl;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -64,14 +65,14 @@ public class UserDao implements BaseStorage<User> {
     @Override
     public List<User> getAll() {
         sqlQuery = "select id, email, login, name, birthday from _user";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
+        return jdbcTemplate.query(sqlQuery, new UserRowMapper());
     }
 
     @Override
     public User get(Integer userId) {
         sqlQuery = "select id, email, login, name, birthday from _user where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, userId);
+            return jdbcTemplate.queryForObject(sqlQuery, new UserRowMapper(), userId);
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Пользователь " + userId + " не найден");
         }
@@ -81,7 +82,7 @@ public class UserDao implements BaseStorage<User> {
         get(userId);
         sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
                 "from user_friend where user_id = ?)";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
+        return jdbcTemplate.query(sqlQuery, new UserRowMapper(), userId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer relatedUserId) {
@@ -89,7 +90,7 @@ public class UserDao implements BaseStorage<User> {
         get(relatedUserId);
         sqlQuery = "select id, email, login, name, birthday from _user where id in (select related_user_id " +
                 "from user_friend where user_id in (?, ?) group by related_user_id having count(user_id) = 2)";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, relatedUserId);
+        return jdbcTemplate.query(sqlQuery, new UserRowMapper(), userId, relatedUserId);
     }
 
     public List<User> addFriend(Integer userId, Integer relatedUserId) {
@@ -108,13 +109,18 @@ public class UserDao implements BaseStorage<User> {
         return getFriends(userId);
     }
 
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
-        return new User(
-                resultSet.getInt("id"),
-                resultSet.getString("email"),
-                resultSet.getString("login"),
-                resultSet.getString("name"),
-                resultSet.getDate("birthday")
-        );
+    private static class UserRowMapper implements RowMapper<User> {
+
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            var id = rs.getInt("id");
+            return new User(
+                    id,
+                    rs.getString("email"),
+                    rs.getString("login"),
+                    rs.getString("name"),
+                    rs.getDate("birthday")
+            );
+        }
     }
 }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao.impl;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -74,7 +75,7 @@ public class FilmDao implements BaseStorage<Film> {
     @Override
     public List<Film> getAll() {
         sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film";
-        List<Film> filmList = jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
+        List<Film> filmList = jdbcTemplate.query(sqlQuery, new FilmMapRow());
         return filmList;
     }
 
@@ -82,14 +83,14 @@ public class FilmDao implements BaseStorage<Film> {
         sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film as f " +
                 "left join (select film_id, count(user_id) as qty from user_like_film group by film_id) as r " +
                 "on r.film_id = f.id order by r.qty desc limit ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+        return jdbcTemplate.query(sqlQuery, new FilmMapRow(), count);
     }
 
     @Override
     public Film get(Integer filmId) {
         sqlQuery = "select id, name, description, release_date, duration, rate, mpa from film where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
+            return jdbcTemplate.queryForObject(sqlQuery, new FilmMapRow(), filmId);
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Фильм " + filmId + " не найден");
         }
@@ -108,16 +109,21 @@ public class FilmDao implements BaseStorage<Film> {
         return get(filmId);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Film(
-                resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getDate("release_date"),
-                resultSet.getInt("duration"),
-                resultSet.getInt("rate"),
-                mpaDao.get(resultSet.getInt("mpa")),
-                genreDao.getFilmGenres(resultSet.getInt("id"))
-        );
+    private class FilmMapRow implements RowMapper<Film> {
+
+        @Override
+        public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
+            var id = rs.getInt("id");
+            return new Film(
+                    id,
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getDate("release_date"),
+                    rs.getInt("duration"),
+                    rs.getInt("rate"),
+                    mpaDao.get(rs.getInt("mpa")),
+                    genreDao.getFilmGenres(rs.getInt("id"))
+            );
+        }
     }
 }

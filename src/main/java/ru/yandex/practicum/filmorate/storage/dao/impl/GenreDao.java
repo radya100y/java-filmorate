@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.storage.dao.impl;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.error.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
@@ -41,14 +41,14 @@ public class GenreDao implements BaseStorage<Genre> {
     @Override
     public List<Genre> getAll() {
         sqlQuery = "select id, name from genre";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
+        return jdbcTemplate.query(sqlQuery, new GenreMapRow());
     }
 
     @Override
     public Genre get(Integer id) {
         sqlQuery = "select id, name from genre where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToGenre, id);
+            return jdbcTemplate.queryForObject(sqlQuery, new GenreMapRow());
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Рейтинг " + id + " не найден");
         }
@@ -65,7 +65,7 @@ public class GenreDao implements BaseStorage<Genre> {
 
     public List<Genre> getFilmGenres(Integer filmId) {
         sqlQuery = "select id, name from genre where id in (select genre_id from film_genre where film_id = ?)";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
+        return jdbcTemplate.query(sqlQuery, new GenreMapRow(), filmId);
     }
 
     public void delFilmGenres(Integer filmId) {
@@ -73,16 +73,14 @@ public class GenreDao implements BaseStorage<Genre> {
         jdbcTemplate.execute(sqlQuery);
     }
 
-    private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Genre(
-                resultSet.getInt("id"),
-                resultSet.getString("name")
-        );
-    }
+    private static class GenreMapRow implements RowMapper<Genre> {
 
-    private Entity mapRowToEntity(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Entity(
-                resultSet.getInt("id")
-        );
+        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
+            var id = rs.getInt("id");
+            return new Genre(
+                    id,
+                    rs.getString("name")
+            );
+        }
     }
 }

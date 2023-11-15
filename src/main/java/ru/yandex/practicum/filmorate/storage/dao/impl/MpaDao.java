@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.storage.dao.impl;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.error.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
@@ -41,27 +41,28 @@ public class MpaDao implements BaseStorage<Mpa> {
     @Override
     public List<Mpa> getAll() {
         sqlQuery = "select id, name from mpa";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToMpa);
+        return jdbcTemplate.query(sqlQuery, new MpaMapRow());
     }
 
     @Override
     public Mpa get(Integer id) {
         sqlQuery = "select id, name from mpa where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, id);
+            return jdbcTemplate.queryForObject(sqlQuery, new MpaMapRow(), id);
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Рейтинг " + id + " не найден");
         }
     }
 
-    private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Mpa(
-                resultSet.getInt("id"),
-                resultSet.getString("name")
-        );
-    }
+    private static class MpaMapRow implements RowMapper<Mpa> {
 
-    private Entity mapRowToEntity(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Entity(resultSet.getInt("id"));
+        @Override
+        public Mpa mapRow(ResultSet rs, int rowNum) throws SQLException {
+            var id = rs.getInt("id");
+            return new Mpa(
+                    id,
+                    rs.getString("name")
+            );
+        }
     }
 }
