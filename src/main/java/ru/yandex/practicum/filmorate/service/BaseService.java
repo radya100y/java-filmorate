@@ -1,13 +1,16 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import java.util.List;
 
 public abstract class BaseService<T extends Entity, Y extends BaseStorage<T>> {
-    private final Y storage;
 
+    protected final Y storage;
+
+    @Autowired
     protected BaseService(Y storage) {
         this.storage = storage;
     }

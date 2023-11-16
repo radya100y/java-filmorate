@@ -12,7 +12,7 @@ class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmControl
 		uri = URI.create("http://localhost:8080/films");
 
 		validBody = "{\"name\": \"nisi eiusmodq\",\"description\": \"adipisicing\"," +
-				"\"releaseDate\": \"1895-12-29\",\"duration\": 100}";
+				"\"releaseDate\": \"1895-12-29\",\"duration\": 100,\"mpa\": { \"id\": 1}}";
 
 		invalidBody1 = "{\"name\": \"\",\"description\": \"adipisicing\"," +
 				"\"releaseDate\": \"1967-03-25\",\"duration\": 100}";
@@ -24,7 +24,7 @@ class FilmorateApplicationTests extends BaseFilmorateApplicationTest<FilmControl
 				"\"releaseDate\": \"1895-12-27\",\"duration\": 100}";
 
 		validUpdateBody = "{\"id\": 1,\"name\": \"Film Updated\",\"releaseDate\": \"1989-04-17\"," +
-				"\"description\": \"New film update decription\",\"duration\": 190,\"rate\": 4}";
+				"\"description\": \"New film update decription\",\"duration\": 190,\"rate\": 4,\"mpa\": { \"id\": 1}}";
 		invalidUpdateBody = "{\"id\": 999,\"name_updated\": \"nisi updated\",\"description\": \"qwe\"," +
 				"\"releaseDate\": \"1895-12-29\",\"duration\": 1000}";
 	}
